@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Eventos - Teste</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .panel {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.error {
+            background-color: #f44336;
+        }
+        button.error:hover {
+            background-color: #da190b;
+        }
+        .log-panel {
+            height: 300px;
+            overflow-y: auto;
+            background-color: #f5f5f5;
+            padding: 10px;
+            font-family: monospace;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        .log-entry.error {
+            color: #f44336;
+        }
+        .log-entry.message {
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sistema de Eventos - Painel de Teste</h1>
+    
+    <div class="container">
+        <div class="panel">
+            <h2>Envio de Mensagens</h2>
+            <div class="form-group">
+                <label for="message">Mensagem:</label>
+                <input type="text" id="message" placeholder="Digite sua mensagem">
+            </div>
+            <button onclick="sendMessage()">Enviar Mensagem</button>
+            <button class="error" onclick="sendEmptyMessage()">Testar Erro (Mensagem Vazia)</button>
+        </div>
+
+        <div class="panel">
+            <h2>Log de Eventos</h2>
+            <div id="eventLog" class="log-panel"></div>
+        </div>
+    </div>
+
+    <div class="panel" style="margin-top: 20px;">
+        <h2>Última Resposta da API</h2>
+        <div id="response"></div>
+    </div>
+
+    <script>
+        function addLogEntry(message, type = 'message') {
+            const logPanel = document.getElementById('eventLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logPanel.insertBefore(entry, logPanel.firstChild);
+        }
+
+        async function sendMessage() {
+            const messageInput = document.getElementById('message');
+            const responseDiv = document.getElementById('response');
+            
+            try {
+                const response = await fetch('/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: messageInput.value
+                    })
+                });
+                
+                const data = await response.json();
+                responseDiv.innerHTML = `
+                    <p><strong>Status:</strong> ${response.ok ? 'Sucesso' : 'Erro'}</p>
+                    <p><strong>Resposta:</strong> ${JSON.stringify(data, null, 2)}</p>
+                `;
+                
+                addLogEntry(`Mensagem enviada: ${messageInput.value}`, 'message');
+                
+                if (response.ok) {
+                    messageInput.value = '';
+                } else {
+                    addLogEntry(`Erro: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `<p style="color: red;">Erro: ${error.message}</p>`;
+                addLogEntry(`Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+
+        function sendEmptyMessage() {
+            document.getElementById('message').value = '';
+            sendMessage();
+        }
+
+        // Adiciona mensagem inicial no log
+        addLogEntry('Sistema de eventos iniciado', 'message');
+    </script>
+</body>
+</html>
