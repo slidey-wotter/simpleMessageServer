@@ -18,13 +18,13 @@ class App(Flask):
       event_manager.register_event("ErrorEvent", ErrorEvent())
 
       # Criando instâncias dos observadores
-      logger = Logger()
+      logger = Logger('logfile.txt') # Este arquivo estaria normalmente em /var/log
       analytics = Analytics()
 
       # Inscrevendo os observadores aos eventos usando o padrão Observer
-      event_manager.subscribe("MessageEvent", logger.log)
+      event_manager.subscribe("MessageEvent", logger.message)
       event_manager.subscribe("MessageEvent", analytics.process)
-      event_manager.subscribe("ErrorEvent", logger.log)
+      event_manager.subscribe("ErrorEvent", logger.error)
 
       # Instanciando o controlador da aplicação, separando a configuração de rotas do restante da lógica
       AppController.setup_routes(self, event_manager)
