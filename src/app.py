@@ -27,4 +27,4 @@ class App(Flask):
       event_manager.subscribe("ErrorEvent", logger.log)
 
       # Instanciando o controlador da aplicação, separando a configuração de rotas do restante da lógica
-      controller = AppController(self, event_manager)
+      AppController.setup_routes(self, event_manager)
