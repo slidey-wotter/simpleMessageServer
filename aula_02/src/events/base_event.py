@@ -17,3 +17,6 @@ class BaseEvent:
         """Notifica todos os inscritos com os dados passados."""
         for callback in self.subscribers:
             callback(data)
+
+    def response(self):
+        pass
