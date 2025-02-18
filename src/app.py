@@ -10,15 +10,12 @@ class App(Flask):
     def __init__(self):
       # --- Configuração do Flask e Eventos ---
       Flask.__init__(self, __name__)
+
       event_manager = EventManager()
 
-      # Instanciando os eventos específicos
-      message_event = MessageEvent()
-      error_event = ErrorEvent()
-
       # Registrando os eventos no gerenciador
-      event_manager.register_event("MessageEvent", message_event)
-      event_manager.register_event("ErrorEvent", error_event)
+      event_manager.register_event("MessageEvent", MessageEvent())
+      event_manager.register_event("ErrorEvent", ErrorEvent())
 
       # Criando instâncias dos observadores
       logger = Logger()
