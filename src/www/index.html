@@ -17,8 +17,8 @@
 	                <label for="message">Mensagem:</label>
 	                <input type="text" id="messageInput" placeholder="Digite sua mensagem">
 	            </div>
-	            <button onclick="sendMessage()">Enviar Mensagem</button>
-	            <button class="error" onclick="sendEmptyMessage()">Testar Erro (Mensagem Vazia)</button>
+	            <button onclick="Message.sendMessage()">Enviar Mensagem</button>
+	            <button class="error" onclick="Message.sendEmptyMessage()">Testar Erro (Mensagem Vazia)</button>
 	        </div>
 
 	        <div class="panel">
@@ -34,7 +34,7 @@
 
 	    <script>
 	        // Adiciona mensagem inicial no log
-	        addLogEntry('Sistema de eventos iniciado', 'message');
+	        Message.addLogEntry('Sistema de eventos iniciado', 'message');
 	    </script>
 	</body>
 </html>
