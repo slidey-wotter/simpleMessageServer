@@ -1,6 +1,6 @@
-from src.app import create_app
+from src.app import App
 
 if __name__ == '__main__':
     # Inicia o servidor Flask em modo debug
-    app = create_app()
+    app = App()
     app.run(debug=True)
