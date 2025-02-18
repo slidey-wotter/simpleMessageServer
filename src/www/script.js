@@ -1,15 +1,16 @@
 function addLogEntry(message, type = 'message') {
-    const logPanel = document.getElementById('eventLog');
+    const logPanel = document.getElementById('logPanel');
     const entry = document.createElement('div');
-    entry.className = `log-entry ${type}`;
-    entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+    const now = new Date();
+    entry.className = 'log-entry ' + type;
+    entry.textContent = '[' + now.toLocaleTimeString() + '] ' + message;
     logPanel.insertBefore(entry, logPanel.firstChild);
 }
 
-async function sendMessage() {
-    const messageInput = document.getElementById('message');
+async function sendMessage(message) {
+    const messageInput = document.getElementById('messageInput');
     const responseDiv = document.getElementById('response');
-    
+
     try {
         const response = await fetch('/send', {
             method: 'POST',
@@ -17,31 +18,29 @@ async function sendMessage() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                message: messageInput.value,
-                funcao: 'enviarMensagem'
+                message: messageInput.value
             })
         });
-        
+
+        addLogEntry('Mensagem enviada: ' + messageInput.value, 'message');
+        messageInput.value = '';
+
         const data = await response.json();
-        responseDiv.innerHTML = `
-            <p><strong>Status:</strong> ${response.ok ? 'Sucesso' : 'Erro'}</p>
-            <p><strong>Resposta:</strong> ${JSON.stringify(data, null, 2)}</p>
-        `;
-        
-        addLogEntry(`Mensagem enviada: ${messageInput.value}`, 'message');
-        
-        if (response.ok) {
-            messageInput.value = '';
-        } else {
-            addLogEntry(`Erro: ${data.error}`, 'error');
+        responseDiv.innerHTML =
+            '<p><strong>Status:</strong> ' + response.status + '</p>' +
+            '<p><strong>Resposta:</strong> ' + JSON.stringify(data, null, 2) + '</p>';
+
+        if (!response.ok) {
+            addLogEntry('Erro: ' + data.error, 'error');
         }
     } catch (error) {
-        responseDiv.innerHTML = `<p style="color: red;">Erro: ${error.message}</p>`;
-        addLogEntry(`Erro na requisição: ${error.message}`, 'error');
+        responseDiv.innerHTML = '<p style="color: red;">Erro: ' + error.message + '</p>';
+        addLogEntry('Erro na requisição: ' + error.message, 'error');
     }
 }
 
 function sendEmptyMessage() {
-    document.getElementById('message').value = '';
-    sendMessage();
+	const messageInput = document.getElementById('messageInput');
+	messageInput.value = '';
+	sendMessage();
 }
