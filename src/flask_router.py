@@ -1,7 +1,7 @@
 from flask import request, jsonify, send_from_directory
 
 # --- Controlador da Aplicação ---
-class AppController:
+class FlaskRouter:
   """
   Controlador que centraliza a configuração das rotas do Flask.
   Separa a lógica de configuração das rotas da lógica de negócios, promovendo modularização.

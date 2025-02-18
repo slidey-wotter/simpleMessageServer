@@ -1,5 +1,5 @@
 from flask import Flask
-from src.app_controler import AppController
+from src.flask_router import FlaskRouter
 from src.event_manager import EventManager
 from src.events.message_event import MessageEvent
 from src.events.error_event import ErrorEvent
@@ -27,4 +27,4 @@ class App(Flask):
       event_manager.subscribe("ErrorEvent", logger.error)
 
       # Instanciando o controlador da aplicação, separando a configuração de rotas do restante da lógica
-      AppController.setup_routes(self, event_manager)
+      FlaskRouter.setup_routes(self, event_manager)
