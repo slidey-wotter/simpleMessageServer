@@ -7,11 +7,11 @@ class AppController:
     Separa a lógica de configuração das rotas da lógica de negócios, promovendo modularização.
     """
     def setup_routes(app, event_manager):
-        @app.route('/', methods=['GET'])
+        @app.get('/')
         def index():
             return send_from_directory('static', 'index.html')
 
-        @app.route('/send', methods=['POST'])
+        @app.post('/send')
         def send_message():
             # Extrai o JSON da requisição
             data = request.json
