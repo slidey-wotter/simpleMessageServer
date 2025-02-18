@@ -14,7 +14,7 @@ class AppController:
     def setup_routes(self):
         @self.app.route('/', methods=['GET'])
         def index():
-            return send_from_directory('src/static', 'index.html')
+            return send_from_directory('static', 'index.html')
 
         @self.app.route('/send', methods=['POST'])
         def send_message():
