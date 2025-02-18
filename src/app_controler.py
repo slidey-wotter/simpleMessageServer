@@ -9,15 +9,15 @@ class AppController:
   def setup_routes(app, event_manager):
     @app.get('/<path:pathname>.css')
     def get_style(pathname):
-      return send_from_directory('static', pathname + '.css')
+      return send_from_directory('www', pathname + '.css')
 
     @app.get('/<path:pathname>.js')
     def get_script(pathname):
-      return send_from_directory('static', pathname + '.js')
+      return send_from_directory('www', pathname + '.js')
 
     @app.get('/')
     def get_index():
-      return send_from_directory('static', 'index.html')
+      return send_from_directory('www', 'index.html')
 
     @app.post('/send')
     def send_message():
