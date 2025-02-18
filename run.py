@@ -1,3 +1,5 @@
+#!./.venv/bin/python3
+
 from src.app import App
 
 if __name__ == '__main__':
