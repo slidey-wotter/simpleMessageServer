@@ -1,5 +1,5 @@
 const Message = {
-	addLogEntry: function(message, type = 'message') {
+	addLogEntry: (message, type = 'message') => {
 	    const logPanel = document.getElementById('logPanel');
 	    const entry = document.createElement('div');
 	    const now = new Date();
@@ -8,7 +8,7 @@ const Message = {
 	    logPanel.insertBefore(entry, logPanel.firstChild);
 	},
 
-	sendMessage: async function() {
+	sendMessage: async () => {
 	    const messageInput = document.getElementById('messageInput');
 	    const responseDiv = document.getElementById('response');
 
@@ -23,7 +23,7 @@ const Message = {
 	            })
 	        });
 
-	        this.addLogEntry('Mensagem enviada: "' + messageInput.value + '"', 'message');
+	        Message.addLogEntry('Mensagem enviada: "' + messageInput.value + '"', 'message');
 	        messageInput.value = '';
 
 	        const data = await response.json();
@@ -32,17 +32,19 @@ const Message = {
 	            '<p><strong>Resposta:</strong> ' + JSON.stringify(data, null, 2) + '</p>';
 
 	        if (!response.ok) {
-	            this.addLogEntry('Erro: ' + data.error, 'error');
+	            Message.addLogEntry('Erro: ' + data.error, 'error');
 	        }
 	    } catch (error) {
 	        responseDiv.innerHTML = '<p style="color: red;">Erro: ' + error.message + '</p>';
-	        this.addLogEntry('Erro na requisição: ' + error.message, 'error');
+	        Message.addLogEntry('Erro na requisição: ' + error.message, 'error');
 	    }
 	},
 
-	sendEmptyMessage: function() {
+	sendEmptyMessage: () => {
 		const messageInput = document.getElementById('messageInput');
 		messageInput.value = '';
-		this.sendMessage();
+		Message.sendMessage();
 	}
 }
+
+Object.freeze(Message); // Por segurança
