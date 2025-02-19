@@ -7,13 +7,13 @@ class Event:
     """
     def __init__(self, name):
         self.name = name
-        self.subscribers = []  # Lista de callbacks inscritos no evento
+        self.__subscribers = []  # Lista de callbacks inscritos no evento
 
     def subscribe(self, callback):
         """Adiciona um callback à lista de inscritos."""
-        self.subscribers.append(callback)
+        self.__subscribers.append(callback)
 
     def notify(self, data):
         """Notifica todos os inscritos com os dados passados."""
-        for callback in self.subscribers:
+        for callback in self.__subscribers:
             callback(data)

@@ -10,14 +10,14 @@ class Logger:
     Demonstra o padrão Observer: reage a notificações de eventos.
     """
     def __init__(self, pathname):
-      self.logfile = open(file=pathname, mode='a', encoding='utf-8')
+      self.__logfile = open(file=pathname, mode='a', encoding='utf-8')
 
     def __del__(self):
-      self.logfile.close()
+      self.__logfile.close()
 
     def log(self, data):
-      self.logfile.write(strftime("[%Y/%m/%d %H:%M:%S]: " + data + "\n", gmtime()))
-      self.logfile.flush() # Força o arquivo a ser escrito
+      self.__logfile.write(strftime("[%Y/%m/%d %H:%M:%S]: " + data + "\n", gmtime()))
+      self.__logfile.flush() # Força o arquivo a ser escrito
 
     def message(self, data):
       self.log('[M] ' + data)
