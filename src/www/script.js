@@ -9,6 +9,11 @@ const Message = {
 			return
 		}
 
+		if (messageInput.value.length >= 50) {
+			alert('somente mensagens de até 50 caracteres são aceitas')
+			return
+		}
+
 		const text = messageInput.value
 		messageInput.value = ''
 
