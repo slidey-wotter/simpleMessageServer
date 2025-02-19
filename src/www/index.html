@@ -8,11 +8,14 @@
 		<script src="script.js"></script>
 	</head>
 	<body>
+		<div id="header"><b>AVISO: NÃO ENVIE INFORMAÇÃO PESSOAL POR AQUI</b></div>
 		<div id="messageFeed"></div>
-		<form onsubmit="Message.sendMessage(event)">
-			<label for="message">Mensagem:</label>
-			<input type="text" id="messageInput">
-			<input type="submit" value="Enviar">
+		<div id="messageContainer">
+			<form onsubmit="Message.sendMessage(event)">
+				<label for="message">Mensagem:</label>
+				<input id="messageInput" type="text" id="messageInput">
+				<input type="submit" value="Enviar">
+			</form>
 		</div>
 	</body>
 </html>
