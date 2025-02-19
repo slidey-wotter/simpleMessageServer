@@ -49,6 +49,7 @@ label, input {
 }
 
 input {
+	min-width: none;
 	height: calc(100% - 10px);
 	font-size: 16pt;
 }
