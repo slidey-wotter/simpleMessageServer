@@ -1,5 +1,6 @@
-from flask import request, jsonify, send_from_directory
+from flask import request, send_from_directory
 from src.event_manager import EventManager
+from src.message_manager import MessageManager
 
 # --- Controlador da Aplicação ---
 class FlaskRouter:
@@ -22,14 +23,11 @@ class FlaskRouter:
 
 		@app.get('/feed')
 		def get_feed():
-			print('stub!')
-			return jsonify([
-				{"timestamp": 1739985287065979421, "text": "mensagem1"},
-				{"timestamp": 1739985376845628687, "text": "mensagem2"}
-			])
+			# NOTA: isso devia retornar not-modified as vezes
+			return MessageManager.get_feed_as_json()
 
 		@app.post('/send')
 		def receive_message():
-			print('stub!')
-			EventManager.notify('MessageEvent', request.json['message'])
+			EventManager.notify('MessageEvent', request.json['text'])
+			MessageManager.receive(request.json['text'])
 			return ''

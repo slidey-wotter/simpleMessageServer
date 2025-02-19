@@ -9,7 +9,7 @@ const Message = {
 			return
 		}
 
-		const message = messageInput.value
+		const text = messageInput.value
 		messageInput.value = ''
 
 		await fetch('/send', {
@@ -17,7 +17,7 @@ const Message = {
 			headers: {
 				'content-type': 'application/json'
 			},
-			body: JSON.stringify({'message': message})
+			body: JSON.stringify({'text': text})
 		})
 	},
 
