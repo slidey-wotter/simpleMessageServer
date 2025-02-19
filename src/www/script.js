@@ -29,11 +29,12 @@ const Message = {
 		Message.feed_response = false
 
 		const response = await fetch('/feed')
+
+		Message.feed_response = true
+		
 		if (!response.ok) {
 			return
 		}
-
-		Message.feed_response = true
 
 		const data = await response.json()
 		const messageFeed = document.getElementById('messageFeed')
@@ -59,3 +60,4 @@ const Message = {
 
 Message.requestFeed()
 setInterval(Message.requestFeed, 500)
+// Essa não é a forma correta de se fazer isso, mas é a mais simples
