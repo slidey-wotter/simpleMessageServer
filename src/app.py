@@ -1,7 +1,7 @@
 from flask import Flask
 from src.flask_router import FlaskRouter
 from src.event_manager import EventManager
-from src.logger import Logger
+from src.logger import FileLogger
 
 class App(Flask):
 	"""
@@ -17,7 +17,7 @@ class App(Flask):
 		EventManager.register_event("ErrorEvent")
 
 		# Criando instâncias dos observadores
-		logger = Logger('logfile.txt') # Este arquivo estaria normalmente em /var/log
+		logger = FileLogger('logfile.txt') # Este arquivo estaria normalmente em /var/log
 
 		# Inscrevendo os observadores aos eventos usando o padrão Observer
 		EventManager.subscribe("MessageEvent", logger.message)
