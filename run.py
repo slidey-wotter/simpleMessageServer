@@ -3,6 +3,6 @@
 from src.app import App
 
 if __name__ == '__main__':
-    # Inicia o servidor Flask em modo debug
-    app = App()
-    app.run(debug=True)
+	# Inicia o servidor Flask em modo debug
+	app = App()
+	app.run(debug=True)

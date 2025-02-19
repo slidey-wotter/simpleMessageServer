@@ -1,50 +1,61 @@
 const Message = {
-	addLogEntry: (message, type = 'message') => {
-	    const logPanel = document.getElementById('logPanel');
-	    const entry = document.createElement('div');
-	    const now = new Date();
-	    entry.className = 'log-entry ' + type;
-	    entry.textContent = '[' + now.toLocaleTimeString() + '] ' + message;
-	    logPanel.insertBefore(entry, logPanel.firstChild);
+	sendMessage: async event => {
+		event.preventDefault() // Evita refrescar a página
+
+		const messageInput = document.getElementById('messageInput')
+
+		if (!messageInput.value) {
+			alert('mensagem vazia!')
+			return
+		}
+
+		const message = messageInput.value
+		messageInput.value = ''
+
+		await fetch('/send', {
+			method: "POST",
+			headers: {
+				'content-type': 'application/json'
+			},
+			body: JSON.stringify({'message': message})
+		})
 	},
 
-	sendMessage: async () => {
-	    const messageInput = document.getElementById('messageInput');
-	    const responseDiv = document.getElementById('response');
+	requestFeed: async () => {
+		if (Message.feed_response != undefined && !Message.feed_response) {
+			return // Somente iremos requisitar se houve resposta
+		}
 
-	    try {
-	        const response = await fetch('/send', {
-	            method: 'POST',
-	            headers: {
-	                'Content-Type': 'application/json'
-	            },
-	            body: JSON.stringify({
-	                message: messageInput.value
-	            })
-	        });
+		Message.feed_response = false
 
-	        Message.addLogEntry('Mensagem enviada: "' + messageInput.value + '"', 'message');
-	        messageInput.value = '';
+		const response = await fetch('/feed')
+		if (!response.ok) {
+			return
+		}
 
-	        const data = await response.json();
-	        responseDiv.innerHTML =
-	            '<p><strong>Status:</strong> ' + response.status + '</p>' +
-	            '<p><strong>Resposta:</strong> ' + JSON.stringify(data, null, 2) + '</p>';
+		Message.feed_response = true
 
-	        if (!response.ok) {
-	            Message.addLogEntry('Erro: ' + data.error, 'error');
-	        }
-	    } catch (error) {
-	        responseDiv.innerHTML = '<p style="color: red;">Erro: ' + error.message + '</p>';
-	        Message.addLogEntry('Erro na requisição: ' + error.message, 'error');
-	    }
+		const data = await response.json()
+		const messageFeed = document.getElementById('messageFeed')
+
+		Message.buildFeed(messageFeed, data)
 	},
 
-	sendEmptyMessage: () => {
-		const messageInput = document.getElementById('messageInput');
-		messageInput.value = '';
-		Message.sendMessage();
+	buildFeed: (element, data) => {
+		element.replaceChildren()
+		for(const message of data) {
+			element.appendChild(Message.buildMessage(message))
+		}
+	},
+
+	buildMessage: message => {
+		const p = document.createElement('p')
+
+		p.textContent = '[' + (new Date(message.timestamp / 1000000)).toLocaleTimeString() + ']: ' + message.text
+
+		return p
 	}
 }
 
-Object.freeze(Message); // Por segurança
+Message.requestFeed()
+setInterval(Message.requestFeed, 500)
