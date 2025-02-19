@@ -4,11 +4,11 @@ from time import gmtime, strftime
 # O uso de strftime é para usar UTC (Coordinated Universal Time) ao invés do tempo local da máquina
 # Com máquinas no mundo todo, UTC é preferido
 
-class Logger:
+class FileLogger:
 	"""
-	Observador que registra (log) os dados recebidos.
-	Demonstra o padrão Observer: reage a notificações de eventos.
+	Observador que registra os dados recebidos.
 	"""
+
 	def __init__(self, pathname):
 		self.__logfile = open(file=pathname, mode='a', encoding='utf-8')
 

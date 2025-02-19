@@ -3,8 +3,8 @@
 class Event:
 	"""
 	Classe base para eventos.
-	Demonstra o conceito de encapsulamento: todos os eventos terão uma estrutura comum.
 	"""
+
 	def __init__(self, name):
 		self.name = name
 		self.__subscribers = []  # Lista de callbacks inscritos no evento

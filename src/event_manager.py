@@ -4,8 +4,8 @@ from src.event import Event
 class EventManager:
 	"""
 	Gerencia o registro e a notificação dos eventos.
-	Utiliza encapsulamento para ocultar a lógica interna de manipulação dos eventos.
 	"""
+
 	__events = {}  # Dicionário para armazenar eventos registrados
 
 	def register_event(event_name):

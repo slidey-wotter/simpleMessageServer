@@ -6,8 +6,8 @@ from src.message_manager import MessageManager
 class FlaskRouter:
 	"""
 	Controlador que centraliza a configuração das rotas do Flask.
-	Separa a lógica de configuração das rotas da lógica de negócios, promovendo modularização.
 	"""
+
 	def setup_routes(app):
 		@app.get('/<path:pathname>.css')
 		def get_style(pathname):

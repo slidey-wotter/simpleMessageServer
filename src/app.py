@@ -4,6 +4,10 @@ from src.event_manager import EventManager
 from src.logger import Logger
 
 class App(Flask):
+	"""
+	A camada mais alta do projeto
+	"""
+
 	def __init__(self):
 		# --- Configuração do Flask e Eventos ---
 		Flask.__init__(self, __name__)

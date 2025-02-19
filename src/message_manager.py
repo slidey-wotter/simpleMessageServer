@@ -3,7 +3,7 @@ from src.message import Message
 
 class MessageManager:
   """
-  Classe estática que armazena as mensagens mais recentes
+  Classe estática que armazena as mensagens mais recentes em um buffer circular
   """
 
   __buffer = []
