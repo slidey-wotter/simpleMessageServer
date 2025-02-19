@@ -1,6 +1,6 @@
 # --- Classes Base para Eventos ---
 
-class BaseEvent:
+class Event:
     """
     Classe base para eventos.
     Demonstra o conceito de encapsulamento: todos os eventos terão uma estrutura comum.

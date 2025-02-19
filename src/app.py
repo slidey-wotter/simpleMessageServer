@@ -1,8 +1,6 @@
 from flask import Flask
 from src.flask_router import FlaskRouter
 from src.event_manager import EventManager
-from src.events.message_event import MessageEvent
-from src.events.error_event import ErrorEvent
 from src.observers.logger import Logger
 from src.observers.analytics import Analytics
 
@@ -11,20 +9,18 @@ class App(Flask):
       # --- Configuração do Flask e Eventos ---
       Flask.__init__(self, __name__)
 
-      event_manager = EventManager()
-
       # Registrando os eventos no gerenciador
-      event_manager.register_event("MessageEvent", MessageEvent())
-      event_manager.register_event("ErrorEvent", ErrorEvent())
+      EventManager.register_event("MessageEvent")
+      EventManager.register_event("ErrorEvent")
 
       # Criando instâncias dos observadores
       logger = Logger('logfile.txt') # Este arquivo estaria normalmente em /var/log
       analytics = Analytics()
 
       # Inscrevendo os observadores aos eventos usando o padrão Observer
-      event_manager.subscribe("MessageEvent", logger.message)
-      event_manager.subscribe("MessageEvent", analytics.process)
-      event_manager.subscribe("ErrorEvent", logger.error)
+      EventManager.subscribe("MessageEvent", logger.message)
+      EventManager.subscribe("MessageEvent", analytics.process)
+      EventManager.subscribe("ErrorEvent", logger.error)
 
       # Instanciando o controlador da aplicação, separando a configuração de rotas do restante da lógica
-      FlaskRouter.setup_routes(self, event_manager)
+      FlaskRouter.setup_routes(self)
