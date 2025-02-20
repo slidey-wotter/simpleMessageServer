@@ -26,6 +26,7 @@ const Message = {
 		})
 	},
 
+	/*
 	requestFeed: async () => {
 		if (Message.feed_response != undefined && !Message.feed_response) {
 			return // Somente iremos requisitar se houve resposta
@@ -46,6 +47,7 @@ const Message = {
 
 		Message.buildFeed(messageFeed, data)
 	},
+	*/
 
 	buildFeed: (element, data) => {
 		element.replaceChildren()
@@ -63,6 +65,24 @@ const Message = {
 	}
 }
 
-Message.requestFeed()
-setInterval(Message.requestFeed, 500)
+// Message.requestFeed()
+// setInterval(Message.requestFeed, 500)
 // Essa não é a forma correta de se fazer isso, mas é a mais simples
+
+let web_socket = {}
+const create_socket = () => {
+	web_socket = new WebSocket('ws://' + document.location.host + '/feed')
+	// web_socket.onopen = event => console.log("WebSocket open: ", event)
+	web_socket.onclose = event => {
+		// console.log("WebSocket close: ", event)
+		create_socket()
+	}
+	// web_socket.onerror = event => console.log("WebSocket error: ", event)
+	// web_socket.onmessage = event => console.log("WebSocket message: ", event)
+}
+
+create_socket()
+
+setInterval(() => {
+	web_socket.send('ping')
+}, 30000)
