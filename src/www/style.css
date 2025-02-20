@@ -16,9 +16,18 @@ body {
 	padding: 5px 0;
 }
 
-#messageFeed {
+#scroller {
 	overflow: scroll;
 	flex-grow: 1;
+}
+
+#scroller * {
+	overflow-anchor: none;
+}
+
+#anchor {
+	overflow-anchor: auto;
+	height: 1px;
 }
 
 #messageContainer {
@@ -46,6 +55,16 @@ form {
 
 label, input {
 	margin: 5px;
+}
+
+@media only screen and (max-width: 480px) {
+	b {
+		font-size: 16pt;
+	}
+
+	label {
+		display: none;
+	}
 }
 
 input {
