@@ -57,6 +57,10 @@ label, input {
 	margin: 5px;
 }
 
+input::placeholder {
+	font-size: 16pt;
+}
+
 @media only screen and (max-width: 480px) {
 	b {
 		font-size: 16pt;
@@ -64,6 +68,12 @@ label, input {
 
 	label {
 		display: none;
+	}
+}
+
+@media (min-width: 481px) {
+	input::placeholder {
+		color: transparent;
 	}
 }
 
