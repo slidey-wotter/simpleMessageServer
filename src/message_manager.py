@@ -13,5 +13,5 @@ class MessageManager:
     if len(MessageManager.__buffer) > 20:
       MessageManager.__buffer.pop(0) # Remove do início
 
-  def get_feed_as_json():
-    return json.dumps(MessageManager.__buffer)
+  def get_feed():
+    return MessageManager.__buffer

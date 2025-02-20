@@ -1,17 +1,13 @@
-from flask import Flask
-from src.flask_router import FlaskRouter
+from src.router import Router
 from src.event_manager import EventManager
 from src.logger import FileLogger
 
-class App(Flask):
+class App:
 	"""
 	A camada mais alta do projeto
 	"""
 
-	def __init__(self):
-		# --- Configuração do Flask e Eventos ---
-		Flask.__init__(self, __name__)
-
+	def setup(sanic):
 		# Registrando os eventos no gerenciador
 		EventManager.register_event("MessageEvent")
 		EventManager.register_event("ErrorEvent")
@@ -24,4 +20,4 @@ class App(Flask):
 		EventManager.subscribe("ErrorEvent", logger.error)
 
 		# Instanciando o controlador da aplicação, separando a configuração de rotas do restante da lógica
-		FlaskRouter.setup_routes(self)
+		Router.setup_routes(sanic)
