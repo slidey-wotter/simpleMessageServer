@@ -10,7 +10,7 @@ class EventManager:
 
 	def register_event(event_name):
 		"""Registra um evento com um nome identificador."""
-		EventManager.__events[event_name] = Event(event_name)
+		EventManager.__events[event_name] = Event()
 
 	def subscribe(event_name, callback):
 		"""Inscreve um callback em um evento registrado."""

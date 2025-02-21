@@ -5,8 +5,7 @@ class Event:
 	Classe base para eventos.
 	"""
 
-	def __init__(self, name):
-		self.name = name
+	def __init__(self):
 		self.__subscribers = []  # Lista de callbacks inscritos no evento
 
 	def subscribe(self, callback):
