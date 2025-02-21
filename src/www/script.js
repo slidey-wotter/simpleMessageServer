@@ -26,29 +26,6 @@ const Message = {
 		})
 	},
 
-	/*
-	requestFeed: async () => {
-		if (Message.feed_response != undefined && !Message.feed_response) {
-			return // Somente iremos requisitar se houve resposta
-		}
-
-		Message.feed_response = false
-
-		const response = await fetch('/feed')
-
-		Message.feed_response = true
-		
-		if (!response.ok) {
-			return
-		}
-
-		const data = await response.json()
-		const messageFeed = document.getElementById('messageFeed')
-
-		Message.buildFeed(messageFeed, data)
-	},
-	*/
-
 	buildFeed: (element, data) => {
 		element.replaceChildren()
 		for(const message of data) {
@@ -58,31 +35,28 @@ const Message = {
 
 	buildMessage: message => {
 		const p = document.createElement('p')
-
 		p.textContent = '[' + (new Date(message.timestamp / 1000000)).toLocaleTimeString() + ']: ' + message.text
-
 		return p
 	}
 }
-
-// Message.requestFeed()
-// setInterval(Message.requestFeed, 500)
-// Essa não é a forma correta de se fazer isso, mas é a mais simples
 
 let web_socket = {}
 const create_socket = () => {
 	web_socket = new WebSocket('ws://' + document.location.host + '/feed')
 	// web_socket.onopen = event => console.log("WebSocket open: ", event)
-	web_socket.onclose = event => {
-		// console.log("WebSocket close: ", event)
-		create_socket()
+	web_socket.onclose = event => create_socket()
+	web_socket.onerror = event => console.log("WebSocket error: ", event)
+	web_socket.onmessage = event => {
+		const message = JSON.parse(event.data)
+		console.log("Message: ", message)
+		const messageFeed = document.getElementById('messageFeed')
+		// NOTA: isso é irresponsável e a resposta devia ter um campo chamado "type"
+		if (message.text && message.timestamp) {
+			messageFeed.appendChild(Message.buildMessage(message))
+		} else {
+			Message.buildFeed(messageFeed, message)
+		}
 	}
-	// web_socket.onerror = event => console.log("WebSocket error: ", event)
-	// web_socket.onmessage = event => console.log("WebSocket message: ", event)
 }
 
 create_socket()
-
-setInterval(() => {
-	web_socket.send('ping')
-}, 30000)

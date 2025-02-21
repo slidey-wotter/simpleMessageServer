@@ -1,7 +1,8 @@
 import sanic as Sanic
-import asyncio as AsyncIO
 from src.event_manager import EventManager
 from src.message_manager import MessageManager
+from src.message import Message
+import json
 
 # --- Controlador da Aplicação ---
 class Router:
@@ -9,30 +10,36 @@ class Router:
 	Controlador que centraliza a configuração das rotas do Sanic.
 	"""
 
-	subscribers = set()
+	clients = set()
 
 	def setup_routes(app):
 		@app.get('/<pathname:ext=css|js>')
-		async def get_file(request, pathname, ext):
+		async def get_file(request: Sanic.Request, pathname, ext):
 			return await Sanic.file('src/www/' + pathname + '.' + ext)
 
 		@app.get('/')
-		async def get_index(request):
+		async def get_index(request: Sanic.Request):
 			return await Sanic.file('src/www/index.html')
 
 		@app.post('/send')
-		def receive_message(request):
-			EventManager.notify('MessageEvent', request.json['text'])
-			MessageManager.receive(request.json['text'])
+		async def receive_message(request: Sanic.Request):
+			message = Message(request.json['text'])
+			EventManager.notify('MessageEvent', message['text'])
+			MessageManager.receive(message)
+			mark_for_discard = set()
+			for client in Router.clients:
+				try:
+					await client.send(json.dumps(message))
+				except Exception as e:
+					mark_for_discard.add(client)
+			for client in mark_for_discard:
+				Router.clients.discard(client)
 			return Sanic.HTTPResponse()
 		
 		@app.websocket('/feed')
-		async def get_feed(request, websocket):
-			Router.subscribers.add(websocket)
+		async def get_feed(request: Sanic.Request, socket: Sanic.Websocket):
+			Router.clients.add(socket)
+			await socket.send(json.dumps(MessageManager.get_feed()))
 			while True:
-				try:
-					async with AsyncIO.timeout(60):
-						message = await websocket.recv()
-				except AsyncIO.TimeoutError:
-					Router.subscribers.discard(request.remote_addr)
-					websocket.close()
+				message = await socket.recv()
+				print("Message: ", message)

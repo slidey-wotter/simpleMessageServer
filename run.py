@@ -4,8 +4,6 @@ from sanic import Sanic
 from src.app import App
 
 sanic = Sanic(__name__)
-sanic.config.WEBSOCKET_PING_INTERVAL = None
-sanic.config.WEBSOCKET_PING_TIMEOUT = None
 App.setup(sanic)
 
 if __name__ == '__main__':
