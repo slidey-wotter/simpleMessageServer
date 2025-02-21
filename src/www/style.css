@@ -14,6 +14,7 @@ body {
 	background: #ffb0b0;
 	width: 100%;
 	padding: 5px 0;
+	text-align: center;
 }
 
 #scroller {
@@ -38,7 +39,6 @@ body {
 b {
 	font-size: 20pt;
 	margin: 0 auto;
-	display: table;
 }
 
 p {

@@ -1,23 +1,25 @@
-let web_socket = {}
-const create_socket = () => {
-	web_socket = new WebSocket('ws://' + document.location.host + '/feed')
-	// web_socket.onopen = event => console.log("WebSocket open: ", event)
-	web_socket.onclose = event => create_socket()
-	web_socket.onerror = event => console.log("WebSocket error: ", event)
-	web_socket.onmessage = event => {
-		const message = JSON.parse(event.data)
-		console.log("Message: ", message)
-		const messageFeed = document.getElementById('messageFeed')
-		// NOTA: isso é irresponsável e a resposta devia ter um campo chamado "type"
-		if (message.text && message.timestamp) {
-			messageFeed.appendChild(Message.buildMessage(message))
-		} else {
-			Message.buildFeed(messageFeed, message)
-		}
-	}
+let web_socket = new WebSocket('ws://' + document.location.host + '/feed')
+
+// web_socket.onopen = event => console.log("WebSocket open: ", event)
+
+web_socket.onclose = event => {
+	const messageFeed = document.getElementById('messageFeed')
+	messageFeed.innerHTML = '<b>Conexão perdida</b><br><p>por favor, recarregue a página.</p>'
 }
 
-create_socket()
+web_socket.onerror = event => console.log("WebSocket error: ", event)
+
+web_socket.onmessage = event => {
+	const message = JSON.parse(event.data)
+	console.log("Message: ", message)
+	const messageFeed = document.getElementById('messageFeed')
+	// NOTA: isso é irresponsável e a resposta devia ter um campo chamado "type"
+	if (message.text && message.timestamp) {
+		messageFeed.appendChild(Message.buildMessage(message))
+	} else {
+		Message.buildFeed(messageFeed, message)
+	}
+}
 
 const Message = {
 	sendMessage: async event => {
