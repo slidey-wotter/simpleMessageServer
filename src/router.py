@@ -30,23 +30,23 @@ class Router:
 		
 		@app.websocket('/feed')
 		async def get_feed(request: Sanic.Request, socket: Sanic.Websocket):
-			Router.__clients.add(socket)
+			with Router.__message_lock:
+				Router.__clients.add(socket)
 			await socket.send(json.dumps(MessageManager.get_feed()))
 			while True:
 				text = await socket.recv()
 				await receive_message(text)
-		
+
 		async def receive_message(text):
 			with Router.__message_lock:
 				message = Message(text)
 				EventManager.notify('MessageEvent', text)
 				MessageManager.receive(message)
-
-			mark_for_discard = set()
-			for client in Router.__clients:
-				try:
-					await client.send(json.dumps(message))
-				except:
-					mark_for_discard.add(client)
-			for client in mark_for_discard:
-				Router.__clients.discard(client)
+				mark_for_discard = set()
+				for client in Router.__clients:
+					try:
+						await client.send(json.dumps(message))
+					except:
+						mark_for_discard.add(client)
+				for client in mark_for_discard:
+					Router.__clients.discard(client)
