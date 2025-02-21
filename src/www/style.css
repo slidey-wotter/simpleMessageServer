@@ -31,6 +31,10 @@ body {
 	height: 1px;
 }
 
+#messageFeed {
+	min-height: 100.01%;
+}
+
 #messageContainer {
 	width: 100%;
 	background: #d8d0d0;

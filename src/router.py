@@ -21,7 +21,7 @@ class Router:
 		async def get_index(request: Sanic.Request):
 			return await Sanic.file('src/www/index.html')
 
-		@app.post('/send')
+		@app.post('/send') # esse método é deprecado
 		async def receive_message_http(request: Sanic.Request):
 			await receive_message(request.json['text'])
 			return Sanic.HTTPResponse()
