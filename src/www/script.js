@@ -1,45 +1,3 @@
-const Message = {
-	sendMessage: async event => {
-		event.preventDefault() // Evita refrescar a página
-
-		const messageInput = document.getElementById('messageInput')
-
-		if (!messageInput.value) {
-			alert('mensagem vazia!')
-			return
-		}
-
-		if (messageInput.value.length >= 50) {
-			alert('somente mensagens de até 50 caracteres são aceitas')
-			return
-		}
-
-		const text = messageInput.value
-		messageInput.value = ''
-
-		await fetch('/send', {
-			method: "POST",
-			headers: {
-				'content-type': 'application/json'
-			},
-			body: JSON.stringify({'text': text})
-		})
-	},
-
-	buildFeed: (element, data) => {
-		element.replaceChildren()
-		for(const message of data) {
-			element.appendChild(Message.buildMessage(message))
-		}
-	},
-
-	buildMessage: message => {
-		const p = document.createElement('p')
-		p.textContent = '[' + (new Date(message.timestamp / 1000000)).toLocaleTimeString() + ']: ' + message.text
-		return p
-	}
-}
-
 let web_socket = {}
 const create_socket = () => {
 	web_socket = new WebSocket('ws://' + document.location.host + '/feed')
@@ -60,3 +18,39 @@ const create_socket = () => {
 }
 
 create_socket()
+
+const Message = {
+	sendMessage: async event => {
+		event.preventDefault() // Evita refrescar a página
+
+		const messageInput = document.getElementById('messageInput')
+
+		if (!messageInput.value) {
+			alert('mensagem vazia!')
+			return
+		}
+
+		if (messageInput.value.length >= 50) {
+			alert('somente mensagens de até 50 caracteres são aceitas')
+			return
+		}
+
+		const text = messageInput.value
+		messageInput.value = ''
+
+		web_socket.send(text)
+	},
+
+	buildFeed: (element, data) => {
+		element.replaceChildren()
+		for(const message of data) {
+			element.appendChild(Message.buildMessage(message))
+		}
+	},
+
+	buildMessage: message => {
+		const p = document.createElement('p')
+		p.textContent = '[' + (new Date(message.timestamp / 1000000)).toLocaleTimeString() + ']: ' + message.text
+		return p
+	}
+}

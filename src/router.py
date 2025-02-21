@@ -22,9 +22,21 @@ class Router:
 			return await Sanic.file('src/www/index.html')
 
 		@app.post('/send')
-		async def receive_message(request: Sanic.Request):
-			message = Message(request.json['text'])
-			EventManager.notify('MessageEvent', message['text'])
+		async def receive_message_http(request: Sanic.Request):
+			await receive_message(request.json['text'])
+			return Sanic.HTTPResponse()
+		
+		@app.websocket('/feed')
+		async def get_feed(request: Sanic.Request, socket: Sanic.Websocket):
+			Router.clients.add(socket)
+			await socket.send(json.dumps(MessageManager.get_feed()))
+			while True:
+				text = await socket.recv()
+				await receive_message(text)
+		
+		async def receive_message(text):
+			message = Message(text)
+			EventManager.notify('MessageEvent', text)
 			MessageManager.receive(message)
 			mark_for_discard = set()
 			for client in Router.clients:
@@ -34,12 +46,3 @@ class Router:
 					mark_for_discard.add(client)
 			for client in mark_for_discard:
 				Router.clients.discard(client)
-			return Sanic.HTTPResponse()
-		
-		@app.websocket('/feed')
-		async def get_feed(request: Sanic.Request, socket: Sanic.Websocket):
-			Router.clients.add(socket)
-			await socket.send(json.dumps(MessageManager.get_feed()))
-			while True:
-				message = await socket.recv()
-				print("Message: ", message)
