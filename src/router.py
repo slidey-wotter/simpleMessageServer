@@ -1,8 +1,9 @@
+import json
+from threading import Lock
 import sanic as Sanic
 from src.event_manager import EventManager
 from src.message_manager import MessageManager
 from src.message import Message
-import json
 
 # --- Controlador da Aplicação ---
 class Router:
@@ -10,7 +11,8 @@ class Router:
 	Controlador que centraliza a configuração das rotas do Sanic.
 	"""
 
-	clients = set()
+	__clients = set()
+	__message_lock = Lock()
 
 	def setup_routes(app):
 		@app.get('/<pathname:ext=css|js>')
@@ -28,21 +30,23 @@ class Router:
 		
 		@app.websocket('/feed')
 		async def get_feed(request: Sanic.Request, socket: Sanic.Websocket):
-			Router.clients.add(socket)
+			Router.__clients.add(socket)
 			await socket.send(json.dumps(MessageManager.get_feed()))
 			while True:
 				text = await socket.recv()
 				await receive_message(text)
 		
 		async def receive_message(text):
-			message = Message(text)
-			EventManager.notify('MessageEvent', text)
-			MessageManager.receive(message)
+			with Router.__message_lock:
+				message = Message(text)
+				EventManager.notify('MessageEvent', text)
+				MessageManager.receive(message)
+
 			mark_for_discard = set()
-			for client in Router.clients:
+			for client in Router.__clients:
 				try:
 					await client.send(json.dumps(message))
-				except Exception as e:
+				except:
 					mark_for_discard.add(client)
 			for client in mark_for_discard:
-				Router.clients.discard(client)
+				Router.__clients.discard(client)
