@@ -44,12 +44,12 @@ const Message = {
 	},
 
 	buildFeed: (element, data) => {
+		const scroller = document.getElementById('scroller')
+		scroller.scroll(0, 10)
 		element.replaceChildren()
 		for(const message of data) {
 			element.appendChild(Message.buildMessage(message))
 		}
-		const scroller = document.getElementById('scroller')
-		scroller.scroll(0, 99999999)
 	},
 
 	buildMessage: message => {
