@@ -7,11 +7,11 @@ web_socket.onclose = event => {
 	messageFeed.innerHTML = '<b>Conexão perdida</b><br><p>por favor, recarregue a página.</p>'
 }
 
-web_socket.onerror = event => console.log("WebSocket error: ", event)
+// web_socket.onerror = event => console.log("WebSocket error: ", event)
 
 web_socket.onmessage = event => {
 	const message = JSON.parse(event.data)
-	console.log("Message: ", message)
+	// console.log("Message: ", message)
 	const messageFeed = document.getElementById('messageFeed')
 	// NOTA: isso é irresponsável e a resposta devia ter um campo chamado "type"
 	if (message.text && message.timestamp) {
