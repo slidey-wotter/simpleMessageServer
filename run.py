@@ -8,4 +8,5 @@ App.setup(sanic)
 
 if __name__ == '__main__':
 	# Inicia o servidor Sanic em modo debug
-	sanic.run(host='0.0.0.0', port=8080, debug=True)
+	sanic.run(host='0.0.0.0', port=8080, dev=True)
+	sanic = None
