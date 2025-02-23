@@ -12,9 +12,6 @@ class FileLogger:
 	def __init__(self, pathname):
 		self.__logfile = open(file=pathname, mode='a', encoding='utf-8')
 
-	def __del__(self):
-		self.__logfile.close()
-
 	def log(self, data):
 		self.__logfile.write(strftime("[%Y/%m/%d %H:%M:%S]: " + data + "\n", gmtime()))
 		self.__logfile.flush() # Força o arquivo a ser escrito
