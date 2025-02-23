@@ -27,12 +27,12 @@ class Router:
 		async def receive_message_http(request: Sanic.Request):
 			await receive_message(request.json['text'])
 			return Sanic.HTTPResponse()
-		
+
 		@app.websocket('/feed')
 		async def get_feed(request: Sanic.Request, socket: Sanic.Websocket):
 			with Router.__message_lock:
 				Router.__clients.add(socket)
-			await socket.send(json.dumps(MessageManager.get_feed()))
+			await socket.send(json.dumps(list(MessageManager.get_feed())))
 			while True:
 				text = await socket.recv()
 				await receive_message(text)
